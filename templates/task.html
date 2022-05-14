@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <style>
-    #heade-text{
+    #heade-text {
         text-align: center;
     }
 </style>
@@ -16,6 +16,11 @@
 <body>
     {% include "parts/header.html" %}
     <h1 id="heade-text">task page {{username}}</h1>
+
+    {% for task in task_list %}
+    {{Task.task}}
+    {% endfor %}
+
     {% include "parts/footer.html" %}
 </body>
 

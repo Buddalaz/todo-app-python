@@ -47,7 +47,8 @@ def index():
 @app.route("/task")
 def task():
     logged_user = session["user_id"]
-    return render_template("task.html", username=logged_user)
+    task_list = Task.query.filter_by(user_id=logged_user)
+    return render_template("task.html", username=logged_user,task=task_list)
     # return "Hello world"
 
 
@@ -63,12 +64,17 @@ def login():
     if request.method == "POST":
         userName = request.form["username"]
 
-        user = User(username=userName)
-        db.session.add(user)
-        db.session.commit()
-        print(user.id)
+        exsisting_user = User.query.filter_by(username=userName).first()
+        print(exsisting_user)
 
-        session["user_id"] = user.id
+        if exsisting_user is None:
+            user = User(username=userName)
+            db.session.add(user)
+            db.session.commit()
+            exsisting_user = user
+            print(user.id)
+
+        session["user_id"] = exsisting_user.id
         return redirect("/task")
 
     return render_template("login.html")
