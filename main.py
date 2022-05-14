@@ -44,11 +44,28 @@ def index():
     # return "Hello world"
 
 
-@app.route("/task")
+@app.route("/task", methods=["POST", "GET"])
 def task():
+    taskName = "Empty"
+    status = "Empty"
+
     logged_user = session["user_id"]
-    task_list = Task.query.filter_by(user_id=logged_user)
-    return render_template("task.html", username=logged_user,task=task_list)
+
+    if request.method == "GET":
+        task_list = Task.query.filter_by(user_id=logged_user)
+    if request.method == "POST":
+        if "task_name" in request.form:
+            taskName = request.form["task_name"]
+        if "status" in request.form:
+            status = request.form["age"]
+        if "user_id" in request.form:
+            user_id = request.form["user_id"]
+
+        task = Task(task=taskName, status=status, user_id=user_id)
+        db.session.add(task)
+        db.session.commit()
+
+    return render_template("task.html", username=logged_user, task=task_list)
     # return "Hello world"
 
 
